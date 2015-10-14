@@ -4,11 +4,9 @@
 <head>
     <meta charset="utf-8" />
     <!-- Social-feed css -->
-    <link href="css/example.css" rel="stylesheet" type="text/css">
-    <link href="css/jquery.socialfeed.css" rel="stylesheet" type="text/css">
-    <!-- font-awesome for social network icons -->
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
+    <link href="../css/example.css" rel="stylesheet" type="text/css">
     <link href='http://fonts.googleapis.com/css?family=Indie+Flower' rel='stylesheet' type='text/css'>
+    <link href="../css/jquery.socialfeed.css" rel="stylesheet" type="text/css">
     <!-- This style is needed only for the plugin demo page. Do not use it in your projects -->
 
     <!-- Jasmine.js styles for test results -->
@@ -20,20 +18,13 @@
         <div class="container">
             <h1>social-feed.js</h1>
             <hr/>
-            <p>jQuery plugin which displays posts by a username and hashtag from the popular social networks:
-                <br/><i>Facebook</i>, <i>Instagram</i>, <i>Twitter</i>, <i>Google+</i>, <i>VK</i>.
-            </p>
+            <p>This page contains a suite of Jasmine tests</p>
             <hr/>
-            <div class="controls">
-                <a href='https://github.com/pavelk2/social-feed/' target='_blank' class='button'><i class="fa fa-github"></i> Get Started</a>
-            </div>
         </div>
     </section>
     <section class="stripe">
         <div class="container field">
-            <input type="text" class="input field-left" value="@teslamotors, #teslamotors" id="query">
-            <button class='button field-right' id="button-update"><i class="fa fa-refresh"></i>
-            </button>
+
         </div>
     </section>
     <section class="feed">
@@ -45,9 +36,17 @@
         </div>
     </section>
     <!-- jQuery -->
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- Codebird.js - required for TWITTER -->
+    <script src="../bower_components/codebird-js/codebird.js"></script>
+    <!-- doT.js for rendering templates -->
+    <script src="../bower_components/doT/doT.min.js"></script>
+    <!-- Moment.js for showing "time ago" -->
+    <script src="../bower_components/moment/min/moment.min.js"></script>
+    <!-- Social-feed js -->
+    <script src="../js/jquery.socialfeed.js"></script>
 
-    <!-- Jasmine.js styles for testing -->
+    <!-- Jasmine.js for testing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.3.4/jasmine.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.3.4/jasmine-html.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.3.4/boot.js"></script>
