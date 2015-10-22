@@ -1,6 +1,7 @@
 describe("jQuery social feed plugin", function() {
     it("is chainable", function() {
-        expect(typeof $(".socialFeed").socialfeed().attr).toBe("function")
+        expect(typeof $(".socialFeed").socialfeed()).toBe("object");
+        expect(typeof $(".socialFeed").socialfeed().attr).toBe("function");
     });
 });
 
@@ -12,6 +13,9 @@ describe("option testing", function() {
     afterEach(function() {
         //remove fake $.ajax function
         jasmine.Ajax.uninstall();
+
+        //clear div contents & event handlers
+        $('.socialFeed').html('').off();
     });
     it("gets correct post template.html", function() {
             //activate Facebook
@@ -28,8 +32,23 @@ describe("option testing", function() {
             //it should be trying to get the post template
             expect(jasmine.Ajax.requests.first().url).toEqual("myTemplate.html");
     });
+    it("doesn't call template.html if template_html parameter is provided", function() {
+            //activate Facebook
+            $('.socialFeed').socialfeed({
+                // FACEBOOK
+                facebook: {
+                    accounts: ["@ford","#ford"],
+                    limit: 2,
+                    access_token: "150849908413827|a20e87978f1ac491a0c4a721c961b68c"
+                },
+                template_html: '<div class="post">{{=it.text}}</div>'
+            });
 
-    it("doesn't show media if show_media==false", function() {
+            //It should NOT be trying to get the template!
+            expect(jasmine.Ajax.requests.first().url).not.toBe("template.html");
+    });
+
+    it("doesn't show images or videos if show_media==false", function() {
         config = {
             clientid: "88b4730e0e2c4b2f8a09a6184af2e218"
         };
@@ -47,17 +66,18 @@ describe("option testing", function() {
                 limit: 2,
                 client_id: "88b4730e0e2c4b2f8a09a6184af2e218"
             },
-            show_media: false,
-            template_html: '<article class="twitter-post"><h4>{{=it.author_name}}</h4><p>{{=it.text}<a href="{{=it.link}}" target="_blank">read more</a></p></article>' // we use template_html for this test to skip the annoying call to template.html
+            template_html: '<div class="post">{{=it.text}}</div>',
+            show_media: false
         });
 
-
+        //there should be no images in .socialFeed div, even though we "returned" some from the fake ajax call.
+        expect($('.socialFeed').find("img").length).toBe(0);
 
     });
 });
 
 
-describe("AJAX calls", function() {
+describe("AJAX", function() {
     beforeEach(function() {
         //setup the fake $.ajax function so we can inspect the calls
         jasmine.Ajax.install();
@@ -65,24 +85,38 @@ describe("AJAX calls", function() {
     afterEach(function() {
         //remove fake $.ajax function
         jasmine.Ajax.uninstall();
+
+        //clear div contents & event handlers
+        $('.socialFeed').empty().off();
     });
-    it("calls Facebook for the userid",function() {
+    fit("calls Facebook for the userid",function() {
+
+        console.log("before Facebook...");
         //activate socialFeed with only Facebook details
         $('.socialFeed').socialfeed({
             // FACEBOOK
             facebook: {
-                accounts: ["@ford","#ford"],
+                accounts: ["@ford"],
                 limit: 2,
                 access_token: "150849908413827|a20e87978f1ac491a0c4a721c961b68c"
             },
-            template_html: '<article class="twitter-post"><h4>{{=it.author_name}}</h4><p>{{=it.text}<a href="{{=it.link}}" target="_blank">read more</a></p></article>' // we use template_html for this test to skip the annoying call to template.html
+            template_html: '<div class="post">{{=it.text}}</div>'
         });
+        console.log("after Facebook...");
 
-        //var stripCallback = /jQuery[_a-z0-9]{1,35}/i
-        //.replace(stripCallback,'')
-        expect(jasmine.Ajax.requests.mostRecent().url).toEqual('https://graph.facebook.com/ford/posts')
+        //makes at least one request
+        expect(jasmine.Ajax.requests.count()).toBeGreaterThan(0);
+
+        //check that it's calling the correct url
+        var stripCallback = /[?]+[a-z0-9_=&]*/i
+        var lastAjaxUrl = jasmine.Ajax.requests.mostRecent().url.replace(stripCallback,'');
+        console.log("lastAjaxUrl=",lastAjaxUrl);
+        console.log("jasmine.Ajax.requests.mostRecent()=",jasmine.Ajax.requests.mostRecent());
+        console.log("jasmine.Ajax.requests.first()=",jasmine.Ajax.requests.first());
+
+        expect(jasmine.Ajax.requests.mostRecent().url).toBe('https://graph.facebook.com/ford/posts')
     });
-    it("calls Instagram for a list of posts",function() {
+    /*it("calls Instagram for a list of posts",function() {
         //activate socialFeed with only Instagram details
         $('.socialFeed').socialfeed({
             // INSTAGRAM
@@ -91,11 +125,12 @@ describe("AJAX calls", function() {
                 limit: 2,
                 client_id: "88b4730e0e2c4b2f8a09a6184af2e218"
             },
-            template_html: '<article class="twitter-post"><h4>{{=it.author_name}}</h4><p>{{=it.text}<a href="{{=it.link}}" target="_blank">read more</a></p></article>' // we use template_html for this test to skip the annoying call to template.html
+            // we use template_html for this test to skip the annoying call to template.html
+            template_html: '<article class="twitter-post"><h4>{{=it.author_name}}</h4><p>{{=it.text}}<a href="{{=it.link}}" target="_blank">read more</a></p></article>'
         });
 
         expect(jasmine.Ajax.requests.mostRecent().url).toEqual("https://api.instagram.com/v1/users/search/?q=ford")
-    });
+    });*/
 });
 
 /*

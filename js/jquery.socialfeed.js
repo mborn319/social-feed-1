@@ -295,6 +295,7 @@ if (typeof Object.create !== 'function') {
                         case '@':
                             var username = account.substr(1);
                             Feed.facebook.utility.getUserId(username, function(userdata) {
+                                console.log("data returned from $.get!",userdata)
                                 if (userdata.id !== '') {
                                     request_url = Feed.facebook.graph + 'v2.4/' + userdata.id + '/posts'+ fields + limit + query_extention;
                                     proceed(request_url);
@@ -631,13 +632,17 @@ if (typeof Object.create !== 'function') {
                 }
             }
         };
-        // Initialization
-        Feed.init();
-        if (options.update_period) {
-            setInterval(function() {
-                return Feed.init();
-            }, options.update_period);
-        }
+
+        //make the plugin chainable
+        return this.each(function() {
+            // Initialization
+            Feed.init();
+            if (options.update_period) {
+                setInterval(function() {
+                    return Feed.init();
+                }, options.update_period);
+            }
+        })
     };
 
 })(jQuery);
